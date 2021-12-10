@@ -9,7 +9,7 @@ Desenvolver um servidor de cadastro de agentes em **node.js**.
 
 Este servidor deverá:
 
-- Receber requisições https GET, POST e DELETE.
+- Receber requisições https GET, POST, PUT e DELETE.
 - Este servidor deve seguir a [API](openapi.yml).
 - Todos os métodos da API deverão ser implementados.
 - Os agentes deverão ser inseridos em arquivo no formato json.
