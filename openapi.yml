@@ -1,0 +1,303 @@
+openapi: 3.0.0
+info:
+  description: Servidor de cadastro de Agentes
+  version: 1.0.0
+  title: API do servidor
+servers:
+  - url: /v1
+paths:
+
+  /healthy:
+    get:
+      tags:
+        - Sanidade do serviço
+      summary: Verificar se o serviço está ativo
+      responses:
+        200:
+          description: Ok.
+        500:
+          description: Erro interno do servidor.
+  
+  /public/agents:
+    delete:
+      tags:
+        - Métodos públicos - Agente
+      summary: Apaga um Agente
+      description: A informação do domínio do cliente é recuperada do token de autenticação.
+      parameters:
+        - name: login
+          in: query
+          description: login do agente
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Ok
+        401:
+          description: Usuário não autenticado.
+        500:
+          description: Erro interno do servidor.
+      security:
+        - cookieAuth: []
+    get:
+      tags:
+        - Métodos públicos - Agente
+      summary: Retorna as informações das Agentes cadastradas
+      description: A informação do domínio do cliente é recuperada do token de autenticação.
+      parameters:
+        - name: state
+          in: query
+          description: Filtra os agentes que estão no estado informado.
+          required: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: Retorna uma lista de Agentes
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AgentList"
+        401:
+          description: Usuário não autenticado.
+        500:
+          description: Erro interno do servidor.
+      security:
+        - cookieAuth: []
+    post:
+      tags:
+        - Métodos públicos - Agente
+      summary: Cria uma nova Agentes
+      description: A informação do domínio do cliente é recuperada do token de autenticação.
+      requestBody:
+        content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/newAgent"
+      responses:
+        201:
+          description: Ok
+          headers:
+            Location:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Agent"
+        401:
+          description: Usuário não autenticado.
+        500:
+          description: Erro interno do servidor.
+      security:
+        - cookieAuth: []
+
+  /public/agents/{agentId}:
+    get:
+      tags:
+        - Métodos públicos - Agente
+      summary: Retorna as informações do Agentes
+      description: A informação do domínio do cliente é recuperada do token de autenticação.
+      parameters:
+        - name: agentId
+          in: path
+          description: identificador do Agente
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Retorna as informações do Agente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Agent"
+        401:
+          description: Usuário não autenticado.
+        500:
+          description: Erro interno do servidor.
+      security:
+        - cookieAuth: []
+    put:
+      tags:
+        - Métodos públicos - Agente
+      summary: Atualiza as informações do Agente
+      description: A informação do domínio do cliente é recuperada do token de autenticação.
+      parameters:
+        - name: agentId
+          in: path
+          description: identificador do Agente
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AgentCommonData"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Agent"
+        401:
+          description: Usuário não autenticado.
+        500:
+          description: Erro interno do servidor.
+      security:
+        - cookieAuth: []
+    delete:
+      tags:
+        - Métodos públicos - Agente
+      summary: Apaga um Agente
+      description: A informação do domínio do cliente é recuperada do token de autenticação.
+      parameters:
+        - name: agentId
+          in: path
+          description: identificador do Agente
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Ok
+        401:
+          description: Usuário não autenticado.
+        500:
+          description: Erro interno do servidor.
+      security:
+        - cookieAuth: []
+
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: access_token
+      
+  schemas:
+    AgentMediaSettings:
+      type: object
+      required:
+        - min
+        - max
+        - selected
+      properties:
+        min:
+          type: integer
+          format: int32
+          description: Número mínimo de dispositivos
+        max:
+          type: integer
+          format: int32
+          description: Número máximo de dispositivos
+        selected:
+          type: integer
+          format: int32
+          description: Número de dispositivos selecionados
+
+    AgentCommonData:
+      type: object
+      required:
+        - name
+        - login
+      properties:
+        name:
+          type: string
+          description: Nome do agente
+        login:
+          type: string
+          description: Login do agente
+        medias:
+          type: object
+          properties:
+            voice:
+              allOf:
+                - $ref: '#/components/schemas/AgentMediaSettings'
+              type: object
+              properties:
+                handleMode:
+                  type: string
+                  description: Modo de atendimento
+                  enum: [AUTO, MANUAL]
+                device:
+                  type: string
+                  description: Numero ramal associado
+                devicePassword:
+                  type: string
+                  description: Senha do ramal associado
+            email:
+              allOf:
+                - $ref: '#/components/schemas/AgentMediaSettings'
+            chat:
+              allOf:
+                - $ref: '#/components/schemas/AgentMediaSettings'
+              type: object
+              properties:
+                handleMode:
+                  type: string
+                  description: Modo de atendimento
+                  enum: [AUTO, MANUAL]
+
+    newAgent:
+      allOf:
+        - $ref: "#/components/schemas/AgentCommonData"
+        - type: object
+          required:
+            - password
+          properties:
+            password:
+              type: string
+              description: SHA512(nome+senha)
+
+    Agent:
+      allOf:
+        - $ref: "#/components/schemas/AgentCommonData"
+        - type: object
+          required:
+            - id
+          properties:
+            id:
+              type: string
+              description: Identificador do agente
+            domain:
+              type: string
+              description: Dominio no qual o agente está associado
+
+    AgentList:
+      type: array
+      items:
+        $ref: '#/components/schemas/Agent'
+
+    Medias:
+      properties:
+        voice:
+          allOf:
+            - $ref: '#/components/schemas/AgentMediaSettings'
+          type: object
+          properties:
+            handleMode:
+              type: string
+              description: Modo de atendimento
+              enum: [AUTO, MANUAL]
+            device:
+              type: string
+              description: Numero ramal associado
+            devicePassword:
+              type: string
+              description: Senha do ramal associado
+        email:
+          allOf:
+            - $ref: '#/components/schemas/AgentMediaSettings'
+        chat:
+          allOf:
+            - $ref: '#/components/schemas/AgentMediaSettings'
+          type: object
+          properties:
+            handleMode:
+              type: string
+              description: Modo de atendimento
+              enum: [AUTO, MANUAL]          
