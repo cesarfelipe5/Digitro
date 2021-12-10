@@ -6,6 +6,8 @@
 # Desafio Back-end
 
 Desenvolver um servidor de cadastro de agentes em **node.js**.
+O agente é um atendente de Contact Center, ele possui atribuitos definidos pela [API](openapi.yml).
+Sigas as estruções abaixo para maiores detalhes.
 
 Este servidor deverá:
 
