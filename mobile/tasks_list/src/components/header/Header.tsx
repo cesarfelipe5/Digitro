@@ -6,7 +6,7 @@ import {COLORS} from '../../../brands/Colors';
 import styles from './Header.styles';
 import {HeaderProps} from './Header.types';
 
-export const Header = ({title, showBack = true}: HeaderProps): JSX.Element => {
+export const Header = ({title, showBack = false}: HeaderProps): JSX.Element => {
   const navigation = useNavigation();
 
   return (
