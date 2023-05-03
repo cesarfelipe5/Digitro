@@ -12,7 +12,7 @@ export const TaskDetailNavigator = () => {
         name="TaskDatail"
         component={TaskDatail}
         options={{
-          header: () => <Header title="Detalhes" />,
+          header: () => <Header title="Detalhes" showBack />,
         }}
       />
     </MainStack.Navigator>

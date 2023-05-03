@@ -40,26 +40,26 @@ export const getTask = async (id: number): Promise<Task> => {
   }
 };
 
-export const upadateTask = async (taskUpdate: Task): Promise<boolean> => {
+export const updateTask = async (taskUpdate: Task): Promise<boolean> => {
   try {
     const taskList = await AsyncStorage.getItem('task_list');
 
     const taskListJson: Task[] = taskList !== null ? JSON.parse(taskList) : [];
 
-    taskListJson.forEach(task => {
+    taskListJson.forEach(async task => {
       if (task.id === taskUpdate.id) {
-        task = {...taskUpdate};
-        // task.description = taskUpdate.description;
-        // task.taskDetail = taskUpdate.taskDetail;
-        // task.title = taskUpdate.title;
+        // task = {...taskUpdate};
+        task.description = taskUpdate.description;
+        task.taskDetail = taskUpdate.taskDetail;
+        task.title = taskUpdate.title;
       }
 
-      storeDataTask(taskListJson);
+      await storeDataTask(taskListJson);
     });
 
     return true;
   } catch (e) {
-    console.log('upadateTask', e);
+    console.log('updateTask', e);
 
     return false;
   }

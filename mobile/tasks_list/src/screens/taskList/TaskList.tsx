@@ -113,6 +113,7 @@ export const TaskList = () => {
         icon={{name: 'add', color: COLORS.white}}
         placement="right"
         onPress={storeTaskFab}
+        color={COLORS.secundary}
       />
     </Loading>
   );
