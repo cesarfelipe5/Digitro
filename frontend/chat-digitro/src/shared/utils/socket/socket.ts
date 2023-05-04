@@ -21,8 +21,8 @@ const socket = io("http://dev.digitro.com/callcontrol", {
 const socketEmitEndCall = (callId: string) =>
   socket.emit("END_CALL", { callId });
 
-const socketUserDisconnect = (callId: string) => {
-  socket.emit("END_CALL", { callId });
+const socketUserDisconnect = (userName: string) => {
+  socket.emit("USER_DISCONNECT", { userName });
 
   socket.on("disconnect", () => {
     console.log(socket.connected);
