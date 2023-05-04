@@ -11,15 +11,14 @@ export const ChatDetail = ({
 }: ChatDetailProps) => {
   return (
     <Box
-      display="flex"
-      flex={1}
+      width={"66%"}
       margin={2}
       padding={2}
       bgcolor="#f7f7f9"
       flexDirection="column"
       borderRadius={2}
     >
-      <Box flexDirection="column" display={"flex"} flex={1}>
+      <Box flexDirection="column">
         <Box>Chamada selecionada</Box>
 
         <Box>CallId: {callId}</Box>
@@ -30,7 +29,7 @@ export const ChatDetail = ({
         <Box>Serviço: {service}</Box>
         <Box>Origem: {origin}</Box>
       </Box>
-      <Box display={"flex"} justifyContent={"end"}>
+      <Box display="flex" justifyContent="end" marginTop={10}>
         <Button variant="contained" color="error">
           Finalizar
         </Button>

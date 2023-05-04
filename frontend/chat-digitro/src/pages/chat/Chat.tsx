@@ -4,7 +4,7 @@ import { ChatDetail } from "../../shared/components/chatDetail";
 import { ChatService } from "../../shared/components/chatService";
 import { Header } from "../../shared/components/header";
 import { useUserContext } from "../../shared/contexts";
-import { socket, socketEmitEndCall } from "../../shared/utils/socket";
+import { socket, socketUserDisconnect } from "../../shared/utils/socket";
 import { Call } from "./chat.types";
 
 export const Chat = () => {
@@ -13,11 +13,9 @@ export const Chat = () => {
   const [calls, setCalls] = useState<Call[]>([] as Call[]);
   const [call, setCall] = useState<Call>({} as Call);
 
-  // console.log("socketsocketsocket", socket.id);
+  const onHandleFinish = () => socketUserDisconnect(userName);
 
-  const onHandleFinish = () => {
-    socketEmitEndCall("123");
-  };
+  const onHandleClick = (seletedCall: Call) => setCall(seletedCall);
 
   const newCall = ({ callId, caller, media, service, startDate }: Call) =>
     setCalls((c) => [...c, { caller, callId, media, service, startDate }]);
@@ -28,10 +26,14 @@ export const Chat = () => {
     <Box>
       <Header userName={userName} onHandleFinish={onHandleFinish} />
 
-      <Box display="flex" flexDirection="row">
-        <ChatService />
+      <Box flexDirection="row" display={"flex"}>
+        <Box display={"flex"}>
+          <ChatService calls={calls} onHandleClick={onHandleClick} />
+        </Box>
 
-        <ChatDetail {...call} />
+        <Box display="contents">
+          <ChatDetail {...call} />
+        </Box>
       </Box>
     </Box>
   );

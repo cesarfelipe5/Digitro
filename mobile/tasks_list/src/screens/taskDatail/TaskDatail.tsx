@@ -1,8 +1,8 @@
 import {RouteProp, useRoute} from '@react-navigation/native';
-import {Text} from '@rneui/base';
-import {CheckBox, Icon} from '@rneui/themed';
+import {CheckBox, Text} from '@rneui/base';
+import {Icon} from '@rneui/themed';
 import React, {useCallback, useEffect, useState} from 'react';
-import {View} from 'react-native';
+import {TouchableOpacity, View} from 'react-native';
 import {getTask} from '../../../utils';
 import {updateTask} from '../../../utils/AsyncStorage';
 import {Loading} from '../../components/loading';
@@ -16,6 +16,7 @@ export const TaskDatail = () => {
   } = useRoute<RouteProp<RootStackParamList, 'Task'>>();
 
   const [task, setTask] = useState<Task>({} as Task);
+  const [editable, setEditable] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const getDataTask = useCallback(async () => {
@@ -31,6 +32,10 @@ export const TaskDatail = () => {
   useEffect(() => {
     getDataTask();
   }, [getDataTask]);
+
+  const hanldleEdit = () => {
+    setEditable(true);
+  };
 
   const renderTaskDetail = (taskItem: TaskDetail, index: number) => {
     const updateFinished = async () => {
@@ -53,6 +58,14 @@ export const TaskDatail = () => {
         onPress={updateFinished}
         fontFamily="Inter-Regular"
       />
+
+      // <EditableCheckbox
+      //   checked={taskItem.finished}
+      //   value={taskItem.description}
+      //   onPress={updateFinished}
+      //   editable={editable}
+      //   onTextEdit={hanldleTextEdit}
+      // />
     );
   };
 
@@ -62,7 +75,9 @@ export const TaskDatail = () => {
         <View style={styles.containerTitle}>
           <Text style={styles.title}>{task.title}</Text>
 
-          <Icon type="font-awesome" name="pencil" />
+          <TouchableOpacity onPress={hanldleEdit}>
+            <Icon type="font-awesome" name="pencil" />
+          </TouchableOpacity>
         </View>
 
         <Text style={styles.description}>{task.description}</Text>
